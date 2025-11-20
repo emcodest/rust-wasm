@@ -1,0 +1,40 @@
+// src/lib.rs
+mod services;
+use wasm_bindgen::prelude::*;
+// This function will be callable from JavaScript
+#[wasm_bindgen]
+pub fn greet(name: &str) {
+    alert(&format!("Hello, {}! 👋 (from Rust)", name));
+}
+#[wasm_bindgen]
+pub fn add_nums(a: i32, b: i32) -> i32 {
+    // a + b
+    let rst = services::add::add_my_vals(a, b);
+    // update js ui
+    UpdateUI(&format!("The answer from rust is: {}", rst));
+    rst
+}
+// Optional: make panics show nicely in browser console
+#[wasm_bindgen(start)]
+pub fn main() -> Result<(), JsValue> {
+    // Better panic messages in browser
+    console_error_panic_hook::set_once();
+
+    // Show a message when the Wasm loads
+    log("Rust Wasm loaded! Try calling greet('Alice') in the console");
+    Ok(())
+}
+
+// Tiny helper so we can use println!-style logging in browser
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+
+    // Simple alert() from JS
+    fn alert(s: &str);
+
+    // let import a fxn from the js, my_image_app.UpdateUI()
+    #[wasm_bindgen(js_namespace = my_image_app)]
+    fn UpdateUI(s: &str);
+}

@@ -1,0 +1,23 @@
+[package]
+name = "image-editor-wasm"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]  # ← ADD THIS BLOCK
+
+# THIS IS THE MAGIC PART — overrides the default target for wasm-pack
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = ["-O3", "--enable-mutable-globals"]
+
+# Optional but recommended: tiny binary
+[profile.release]
+opt-level = "s"       # or "z" for even smaller
+lto = true
+codegen-units = 1
+panic = "abort"       # removes panic unwinding bloat
+
+[dependencies]
+console_error_panic_hook = "0.1.7"
+wasm-bindgen = "0.2.105"
+web-sys = { version = "0.3.82", features = ["File", "FileList", "FileReader", "DataTransfer", "DragEvent", "HtmlInputElement", "console", "HtmlElement", "Document", "Window", "Url"] }

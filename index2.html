@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Editor - App</title>
+</head>
+<body>
+    <div>
+        <h1>Image Editor App - With WASM</h1>
+        <hr>
+        <h1>Rust + WebAssembly = ❤️</h1>
+         <hr>
+
+    <button onclick="hello_from_rust()">Click me!</button>
+    <p>Open browser console (F12) to see logs</p>
+    <hr/>
+    <h2>Adder</h2>
+    <div style ="border: 1px solid red">
+        <input id = "a" placeholder = "First No." type = "number" /><br>
+        <input id = "b" placeholder = "Second No." type = "number" /><br>
+        <button id = "add">Add Now</button>      
+    </div>
+        <div style ="border: 1px solid red">
+            <h2>MESSAGES FROM RUST - Updates</h2>
+            <div id = "messages" style = "border: 3px solid green; min-height: 200px;"></div>
+        </div>
+        <div>
+            <div> <h1>Upload My File</h1></div>
+            <input type ="file" />
+        </div>
+    </div>
+    <!-- to be called by rust -->
+    <script src = "js/script.js"></script>
+    <script type = "module">
+        import init, { greet, add_nums } from './pkg/image_editor_wasm.js';
+        async function run() {
+            await init();                     // loads the .wasm file
+            window.hello_from_rust = function() {
+                greet("Browser");             // calls Rust function!
+            };
+            console.log("Wasm ready! Click the button");
+        }
+        run();
+        window.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("add").onclick = function() {
+                const a = document.getElementById("a").value
+                const b = document.getElementById("b").value
+               const getn =  add_nums(a, b)
+               alert("Ans from rust: "+getn)
+            }
+        })
+    </script>
+    
+</body>
+</html>
